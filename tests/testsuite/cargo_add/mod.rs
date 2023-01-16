@@ -33,6 +33,8 @@ mod git_registry;
 mod git_rev;
 mod git_tag;
 mod infer_prerelease;
+mod max_version;
+mod max_stable_version;
 mod invalid_arg;
 mod invalid_git_external;
 mod invalid_git_name;
@@ -158,6 +160,17 @@ fn add_registry_packages(alt: bool) {
     cargo_test_support::registry::Package::new("prerelease_only", "0.2.0-alpha.1")
         .alternative(alt)
         .publish();
+
+    cargo_test_support::registry::Package::new("prerelease_max", "1.0.0")
+        .alternative(alt)
+        .publish();
+    cargo_test_support::registry::Package::new("prerelease_max", "2.0.0-rc.1")
+        .alternative(alt)
+        .publish();
+    cargo_test_support::registry::Package::new("prerelease_max", "2.0.0-rc.2")
+        .alternative(alt)
+        .publish();
+
     cargo_test_support::registry::Package::new("test_breaking", "0.2.0")
         .alternative(alt)
         .publish();

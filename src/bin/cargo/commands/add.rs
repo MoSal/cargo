@@ -38,6 +38,11 @@ You can reference a package by:
 - `<name>@<version-req>`, like `cargo add serde@1` or `cargo add serde@=1.0.38`"
             )
                 .group("selected"),
+            flag("max-version",
+                "Pick the max version available, even if it's a pre-release one"),
+            flag("max-stable-version",
+                "Pick a max stable (not pre-release) version if exists (default)")
+                .overrides_with("max-version"),
             flag("no-default-features",
                 "Disable the default features"),
             flag("default-features",
@@ -217,6 +222,7 @@ fn parse_dependencies(config: &Config, matches: &ArgMatches) -> CargoResult<Vec<
         Some(reg) if reg == CRATES_IO_REGISTRY => None,
         reg => reg,
     };
+    let max_version = max_version(matches);
     let default_features = default_features(matches);
     let optional = optional(matches);
 
@@ -294,6 +300,7 @@ fn parse_dependencies(config: &Config, matches: &ArgMatches) -> CargoResult<Vec<
             crate_spec,
             rename: rename.map(String::from),
             features,
+            max_version,
             default_features,
             optional,
             registry: registry.clone(),
@@ -311,6 +318,13 @@ fn parse_dependencies(config: &Config, matches: &ArgMatches) -> CargoResult<Vec<
     }
 
     Ok(deps)
+}
+
+fn max_version(matches: &ArgMatches) -> Option<bool> {
+    resolve_bool_arg(
+        matches.flag("max-version"),
+        matches.flag("max-stable-version"),
+    )
 }
 
 fn default_features(matches: &ArgMatches) -> Option<bool> {
