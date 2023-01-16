@@ -113,6 +113,14 @@ which is defined by the <code>registry.default</code> config key which defaults 
 <dd class="option-desc">Mark the dependency as <a href="../reference/features.html#optional-dependencies">required</a>.</dd>
 
 
+<dt class="option-term" id="option-cargo-add---max-version"><a class="option-anchor" href="#option-cargo-add---max-version"></a><code>--max-version</code></dt>
+<dd class="option-desc">Pick the max version available, even if it's a pre-release one.</dd>
+
+
+<dt class="option-term" id="option-cargo-add---max-stable-version"><a class="option-anchor" href="#option-cargo-add---max-stable-version"></a><code>--max-stable-version</code></dt>
+<dd class="option-desc">Pick a max stable (not pre-release) version if exists (default).</dd>
+
+
 <dt class="option-term" id="option-cargo-add---no-default-features"><a class="option-anchor" href="#option-cargo-add---no-default-features"></a><code>--no-default-features</code></dt>
 <dd class="option-desc">Disable the <a href="../reference/features.html#dependency-features">default features</a>.</dd>
 

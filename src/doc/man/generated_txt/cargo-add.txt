@@ -95,6 +95,12 @@ OPTIONS
            Mark the dependency as required
            <https://doc.rust-lang.org/cargo/reference/features.html#optional-dependencies>.
 
+       --max-version
+           Pick the max version available, even if it's a pre-release one.
+
+       --max-stable-version
+           Pick a max stable (not pre-release) version if exists (default).
+
        --no-default-features
            Disable the default features
            <https://doc.rust-lang.org/cargo/reference/features.html#dependency-features>.

@@ -235,6 +235,9 @@ pub struct DepOp {
     /// Registry for looking up dependency version
     pub registry: Option<String>,
 
+    /// Whether the max_version of the crate should be picked, even if it's pre-release
+    pub max_version: Option<bool>,
+
     /// Git repo for dependency
     pub path: Option<String>,
     /// Git repo for dependency
@@ -363,7 +366,8 @@ fn resolve_dependency(
             }
             dependency = dependency.set_source(src);
         } else {
-            let latest = get_latest_dependency(&dependency, false, config, registry)?;
+            let allow_prerelease_max = arg.max_version.unwrap_or(false);
+            let latest = get_latest_dependency(&dependency, allow_prerelease_max, config, registry)?;
 
             if dependency.name != latest.name {
                 config.shell().warn(format!(
@@ -514,7 +518,7 @@ fn get_existing_dependency(
 
 fn get_latest_dependency(
     dependency: &Dependency,
-    _flag_allow_prerelease: bool,
+    allow_prerelease_max: bool,
     config: &Config,
     registry: &mut PackageRegistry<'_>,
 ) -> CargoResult<Dependency> {
@@ -538,7 +542,7 @@ fn get_latest_dependency(
                     // Fallback to a pre-release if no official release is available by sorting them as
                     // less.
                     let stable = s.version().pre.is_empty();
-                    (stable, s.version())
+                    (stable || allow_prerelease_max, s.version())
                 })
                 .ok_or_else(|| {
                     anyhow::format_err!(

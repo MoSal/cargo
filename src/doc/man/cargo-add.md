@@ -107,6 +107,14 @@ Mark the dependency as [optional](../reference/features.html#optional-dependenci
 Mark the dependency as [required](../reference/features.html#optional-dependencies).
 {{/option}}
 
+{{#option "`--max-version`" }}
+Pick the max version available, even if it's a pre-release one.
+{{/option}}
+
+{{#option "`--max-stable-version`" }}
+Pick a max stable (not pre-release) version if exists (default).
+{{/option}}
+
 {{#option "`--no-default-features`" }}
 Disable the [default features](../reference/features.html#dependency-features).
 {{/option}}
