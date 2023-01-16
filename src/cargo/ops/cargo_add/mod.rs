@@ -367,16 +367,16 @@ fn resolve_dependency(
             dependency = dependency.set_source(src);
         } else {
             let allow_prerelease_max = arg.max_version.unwrap_or(false);
-            let latest = get_latest_dependency(&dependency, allow_prerelease_max, config, registry)?;
+            let dep_max_ver = get_dependency_max_ver(&dependency, allow_prerelease_max, config, registry)?;
 
-            if dependency.name != latest.name {
+            if dependency.name != dep_max_ver.name {
                 config.shell().warn(format!(
                     "translating `{}` to `{}`",
-                    dependency.name, latest.name,
+                    dependency.name, dep_max_ver.name,
                 ))?;
-                dependency.name = latest.name; // Normalize the name
+                dependency.name = dep_max_ver.name; // Normalize the name
             }
-            dependency = dependency.set_source(latest.source.expect("latest always has a source"));
+            dependency = dependency.set_source(dep_max_ver.source.expect("dep_max_ver always has a source"));
         }
     }
 
@@ -516,7 +516,7 @@ fn get_existing_dependency(
     Ok(Some(dep))
 }
 
-fn get_latest_dependency(
+fn get_dependency_max_ver(
     dependency: &Dependency,
     allow_prerelease_max: bool,
     config: &Config,
@@ -536,7 +536,7 @@ fn get_latest_dependency(
                     std::task::Poll::Pending => registry.block_until_ready()?,
                 }
             };
-            let latest = possibilities
+            let max_ver = possibilities
                 .iter()
                 .max_by_key(|s| {
                     // Fallback to a pre-release if no official release is available by sorting them as
@@ -549,7 +549,7 @@ fn get_latest_dependency(
                         "the crate `{dependency}` could not be found in registry index."
                     )
                 })?;
-            let mut dep = Dependency::from(latest);
+            let mut dep = Dependency::from(max_ver);
             if let Some(reg_name) = dependency.registry.as_deref() {
                 dep = dep.set_registry(reg_name);
             }
